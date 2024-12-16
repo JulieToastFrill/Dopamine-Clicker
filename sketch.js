@@ -3,7 +3,7 @@ let dopamine;
 let multiplier;
 var time = 0;
 var Solution;
-var Num1, Num2;
+let Num1, Num2;
 let Problem;
 var Correct = false;
 var BackColorR = 255;
@@ -32,7 +32,7 @@ let DopeModel;
 var gameState = 0;
 var menuButton = false;
 let UpgradePrice;
-var AutoDopa = 0;
+let AutoDopa;
 let Milliseconds = 0;
 var firstAngle = 0;
 var secondAngle = 128;
@@ -44,6 +44,8 @@ var runClick = true;
 var waitTime = 0;
 let GriddySaveStuff;
 let isThereSave;
+let GlobalOp;
+let num1String, num2String;
 
 function preload() {
   DopeModel = loadModel("681-bas-color-print_NIH3D.stl", true);
@@ -64,6 +66,7 @@ if (getItem('isThereSave') == 20) {
   GriddySaveStuff[2] = getItem('griddyNumber');
   multiplier = getItem('multiplier');
   UpgradePrice = getItem('UpgradePrices');
+  AutoDopa = getItem('AutoDopa');
 
   // GriddySaveStuff[1] = GriddyPercent;
   // GriddySaveStuff[2] = GriddyNumber;
@@ -75,6 +78,7 @@ else {
   GriddySaveStuff = [0,0,20];
   multiplier = 1;
   UpgradePrice = [25, 25, 0, 0];
+  AutoDopa = 0;
 
 
 
@@ -130,10 +134,10 @@ function draw() {
       40
     );
    // print("griddypercent: " + GriddySaveStuff[1] + "\ngriddynumber: " + GriddySaveStuff[2]);
-    push();
-    textSize(8);
-    text("griddypercent: " + GriddySaveStuff[1] + "\ngriddynumber: " + GriddySaveStuff[2], 0, -400);
-    pop();
+    // push();
+    // textSize(8);
+    // text("griddypercent: " + GriddySaveStuff[1] + "\ngriddynumber: " + GriddySaveStuff[2], 0, -400);
+    // pop();
   }
   //print("\nMenu Button : " + menuButton);
 
@@ -148,8 +152,8 @@ function draw() {
 
   //game state 3
 
-  if (gameState == 3) {
-  }
+  // if (gameState == 3) {
+  // }
   //game state 0
   if (gameState == 0) {
     push();
@@ -164,9 +168,9 @@ function draw() {
 
     noStroke();
     normalMaterial();
-    scale(4);
+    scale(2);
     translate(0, 0, -100);
-   //rotateX(frameCount * 60);
+    //rotateX(frameCount * 60);
     rotateY(frameCount * 0.009);
     //rotateZ(frameCount * 78);
     model(DopeModel);
@@ -195,7 +199,8 @@ function draw() {
     text("DOPAMINE\n" + dopamine, 0, -300);
     fill(0, 0, 0, 0);
     fill(0);
-    text(num1 + " x " + num2, 0, -70);
+    // mathFact();
+    text(num1 + " " + GlobalOp + " " + num2, 0, -70);
     textSize(100);
     rectMode(CORNER);
     fill(255);
@@ -339,9 +344,14 @@ function draw() {
     circle(-120, -120, 120);
     circle(120, -120, 120);
 
-    //unfinished buttons
-    // circle(-120, 120, 120);
-    // circle(120, 120, 120);
+    pop();
+
+    push();
+
+    rectMode(CENTER);
+    rect(-120, 120, 120);
+    rect(120, 120, 120);
+
     pop();
 
     //checks for button collision
@@ -420,13 +430,12 @@ function savingSystem() {
   storeItem('griddyNumber', GriddySaveStuff[2]);
   storeItem('multiplier', multiplier);
   storeItem('UpgradePrices', UpgradePrice);
+  storeItem('AutoDopa', AutoDopa);
 
 }
 
 function deleteSaves() {
   clearStorage();
-
-
 }
 
 
@@ -450,19 +459,43 @@ function modelLoaded() {
   gameState = 0;
 }
 function mathFact() {
-  //noLoop();
-  num1 = round(random(9));
-  num2 = round(random(9));
-  solution = num1 * num2;
-  // fill(0);
-  // stroke(0);
+  let Oper = round(random(3));
+  print (Oper + "is the operation");
+  if (Oper == 0) {
+    num1 = round(random(9));
+    num2 = round(random(9));
+    solution = num1 * num2;
+    GlobalOp = "x"
+  }
+  if (Oper == 1) {
+    num2 = round(random(8)+1);
+    solution = round(random(9));
+    num1 = num2 * solution;
+    GlobalOp = "/"
+  }
+  if (Oper == 2) {
+    num1 = round(random(50));
+    num2 = round(random(50));
+    solution = num1 + num2;
+    GlobalOp = "+"
+  }
+  if (Oper == 3) {
+    num1 = round(random(99));
+    num2 = round(random(99));
+    if (num1 < num2){
+        num2 = [num1, num1 = num2][0];
+    }
+    solution = num1 - num2;
+    GlobalOp = "-"
+  }
+
   CorrectChoice = round(random(0, 3));
 
   print("Correct Answer: " + CorrectChoice);
 
   //Randomly chooses the correct choice and makes false answers for wrong choices.
   //This is stupid.
-// Multi[0] = 0;
+  // Multi[0] = 0;
   // Multi[1] = 1;
   // Multi[2] = 2;
   // Multi[3] = 3;
